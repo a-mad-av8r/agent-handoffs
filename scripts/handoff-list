@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/_handoff_lib.sh
+source "$SCRIPT_DIR/_handoff_lib.sh"
+require_db
+
+mine=""
+if [[ "${1:-}" == "--mine" ]]; then
+  mine="${2:-}"
+fi
+
+where="project='$(sql_escape "$HANDOFF_PROJECT")'"
+if [[ -n "$mine" ]]; then
+  where="$where AND to_agent='$(sql_escape "$mine")' AND status IN ('pending','claimed')"
+fi
+
+sqlite3 -header -column "$HANDOFF_DB" "
+SELECT id, status, priority, from_agent, to_agent, summary, next_step
+FROM handoffs
+WHERE $where
+ORDER BY created_at ASC;
+"

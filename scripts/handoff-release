@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/_handoff_lib.sh
+source "$SCRIPT_DIR/_handoff_lib.sh"
+require_db
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: handoff-release <handoff-id>" >&2
+  exit 1
+fi
+
+sqlite3 "$HANDOFF_DB" "UPDATE handoffs SET status='pending', claim_agent=NULL, claimed_at=NULL WHERE id='$(sql_escape "$1")' AND status='claimed';"
+echo "released $1"

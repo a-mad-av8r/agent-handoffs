@@ -1,29 +1,52 @@
 # agent-handoffs
 
-**Structured work transfers between AI agents — zero context lost**
+Structured ownership transfer for AI agent teams.
 
-> 🔜 **Coming Soon** — Part of the [Agent Cortex](https://github.com/a-mad-av8r/agent-cortex) series.
+A handoff is not a message. It is a lifecycle record: created, claimed,
+completed, released, or failed with verification attached. This repo is the
+public runnable slice of that pattern.
 
----
+## Quick Start
 
-## Piece 3 of 7
+```bash
+git clone https://github.com/a-mad-av8r/agent-handoffs
+cd agent-handoffs
+cp .env.example .env
+./setup.sh
+./scripts/handoff-create --from saul --to marlow --summary "Review CS003 post copy" --next "Check Amad voice"
+./scripts/handoff-list --mine marlow
+./scripts/handoff-claim <handoff-id> --agent marlow
+./scripts/handoff-complete <handoff-id>
+```
 
-This repo is part of **Agent Cortex** — an open-source multi-agent collaboration system built for real production use.
+## What Is Included
 
-| Piece | Repo | Status |
-|-------|------|--------|
-| 1. Memory | [agent-memory](https://github.com/a-mad-av8r/agent-memory) | ✅ **Live** |
-| 2. Telepathic Link | [agent-telepathy](https://github.com/a-mad-av8r/agent-telepathy) | 🔜 Coming Soon |
-| 3. Handoffs | [agent-handoffs](https://github.com/a-mad-av8r/agent-handoffs) | 🔜 Coming Soon |
-| 4. Roles | [agent-roles](https://github.com/a-mad-av8r/agent-roles) | 🔜 Coming Soon |
-| 5. Retention | [agent-retention](https://github.com/a-mad-av8r/agent-retention) | 🔜 Coming Soon |
-| 6. Multi-Tool | [agent-multimodel](https://github.com/a-mad-av8r/agent-multimodel) | 🔜 Coming Soon |
-| 7. Full Cortex | [agent-cortex](https://github.com/a-mad-av8r/agent-cortex) | 🔜 Coming Soon |
+- `schema.sql` with active and archived handoff tables.
+- CLI scripts for create, list, claim, complete, release, fail, and diagnose.
+- Example handoff documents.
+- Lifecycle and template docs.
 
-⭐ **Start with [Agent Memory](https://github.com/a-mad-av8r/agent-memory)** — it's live and ready to use.
+## What Is Deliberately Out
+
+- Internal publish automation.
+- EnGenAI approval workflows.
+- Full project task board.
+- Customer-grade audit and platform routing.
+
+## Series Map
+
+| Part | Repo | Focus |
+| --- | --- | --- |
+| 1 | [agent-cortex](https://github.com/a-mad-av8r/agent-cortex) | Operating memory core |
+| 2 | [agent-telepathy](https://github.com/a-mad-av8r/agent-telepathy) | Event awareness |
+| 3 | [agent-handoffs](https://github.com/a-mad-av8r/agent-handoffs) | Structured transfer |
+| 4 | [agent-roles](https://github.com/a-mad-av8r/agent-roles) | Role boundaries |
+| 5 | [agent-retention](https://github.com/a-mad-av8r/agent-retention) | Memory lifecycle |
+| 6 | [agent-multimodel](https://github.com/a-mad-av8r/agent-multimodel) | Shared protocol across tools |
 
 ## Author
 
-**Amad Malik** — Founder + CEO/CTO of Adaptech AI Ltd, building EnGenAI ([engenai.app](https://engenai.app)).
+Amad Malik - Founder and CEO/CTO of Adaptech AI Ltd, building EnGenAI
+([engenai.app](https://engenai.app)).
 
-[LinkedIn](https://www.linkedin.com/in/amadmalik/) · [GitHub](https://github.com/a-mad-av8r)
+[LinkedIn](https://www.linkedin.com/in/amadmalik/) | [GitHub](https://github.com/a-mad-av8r)

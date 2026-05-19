@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/_handoff_lib.sh
+source "$SCRIPT_DIR/_handoff_lib.sh"
+require_db
+
+from=""
+to=""
+summary=""
+next_step=""
+verify=""
+priority="medium"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --from) from="${2:-}"; shift 2 ;;
+    --to) to="${2:-}"; shift 2 ;;
+    --summary) summary="${2:-}"; shift 2 ;;
+    --next) next_step="${2:-}"; shift 2 ;;
+    --verify) verify="${2:-}"; shift 2 ;;
+    --priority) priority="${2:-medium}"; shift 2 ;;
+    *) echo "Unknown argument: $1" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$from" || -z "$to" || -z "$summary" ]]; then
+  echo "Usage: handoff-create --from <agent> --to <agent> --summary <text> [--next text] [--verify text] [--priority low|medium|high|urgent]" >&2
+  exit 1
+fi
+
+id="$(new_handoff_id)"
+sqlite3 "$HANDOFF_DB" "INSERT INTO handoffs(id, project, from_agent, to_agent, priority, summary, next_step, verify)
+VALUES ('$(sql_escape "$id")', '$(sql_escape "$HANDOFF_PROJECT")', '$(sql_escape "$from")', '$(sql_escape "$to")', '$(sql_escape "$priority")', '$(sql_escape "$summary")', '$(sql_escape "$next_step")', '$(sql_escape "$verify")');"
+
+echo "$id"

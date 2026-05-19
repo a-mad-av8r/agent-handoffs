@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/_handoff_lib.sh
+source "$SCRIPT_DIR/_handoff_lib.sh"
+require_db
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: handoff-claim <handoff-id> --agent <agent>" >&2
+  exit 1
+fi
+
+id="$1"
+shift
+agent=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --agent) agent="${2:-}"; shift 2 ;;
+    *) echo "Unknown argument: $1" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$agent" ]]; then
+  echo "handoff-claim requires --agent" >&2
+  exit 1
+fi
+
+sqlite3 "$HANDOFF_DB" "UPDATE handoffs SET status='claimed', claim_agent='$(sql_escape "$agent")', claimed_at=CURRENT_TIMESTAMP WHERE id='$(sql_escape "$id")' AND status='pending';"
+echo "claimed $id as $agent"
